@@ -1,0 +1,55 @@
+<div class="modal-content">
+
+    <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" ng-click="close()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h4 class="modal-title">SUGGEST NEW AUTOMATION</h4>
+    </div>
+
+    <div class="modal-body" ng-form="suggestForm">
+        <div class="row">
+            <div class="col-md-5">
+                <label for="title" class="control-label align-left ng-binding form-field-required">DESCRIPTION OF PROCESS</label>
+            </div>
+            <div class="col-md-7">
+                <textarea ng-model="suggestion.Title" name="title" id="title" required="true"></textarea>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+                <label for="SuggestedBy" class="control-label align-left ng-binding form-field-required">Owner</label>
+            </div>
+            <div class="col-md-7">
+                <input type="text"
+                       uib-typeahead="user as user.first for user in users | filter:{first:$viewValue}"
+                       ng-model="suggestion.SuggestedBy" name="SuggestedBy" id="SuggestedBy" required="true"></input>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+                <label for="TimeSavedPerWeek" class="control-label align-left ng-binding form-field-required">TimeSavedPerWeek</label>
+            </div>
+            <div class="col-md-7">
+                <input type="time" max="{{'12:00' | date:'HH:mm'}}"
+                       ng-model="suggestion.TimeSavedPerWeek" name="TimeSavedPerWeek" id="TimeSavedPerWeek" required="true"></input>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-5">
+                <label for="NumberOfTicketsPerWeek" class="control-label align-left ng-binding form-field-required">NumberOfTicketsPerWeek</label>
+            </div>
+            <div class="col-md-7">
+                <input type="number" ng-model="suggestion.NumberOfTicketsPerWeek" name="NumberOfTicketsPerWeek" id="NumberOfTicketsPerWeek" required="true"></input>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn" ng-click="close()">CANCEL</button>
+        <button type="button" class="btn" ng-click="save()" ng-disabled="!suggestForm.$valid">DONE</button>
+    </div>
+</div>

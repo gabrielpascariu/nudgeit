@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:ng="http://angularjs.org" id="ng-app" ng-app="Nudgeit">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Nudgeit</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="css/styles.css" />
+
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript" language="javascript" src="https://code.angularjs.org/1.5.8/angular.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://code.angularjs.org/1.5.8/angular-resource.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://code.angularjs.org/1.5.8/angular-route.min.js"></script>
+
+    <script type="text/javascript" language="javascript" src="https://code.angularjs.org/1.5.8/angular-mocks.js"></script>
+
+    <script type="text/javascript" language="javascript" src="js/23-ui-bootstrap-tpls-1.1.1.min.js"></script>
+    <script type="text/javascript" language="javascript" src="js/automationSuggestions.js"></script>
+
+    <!--<script type="text/javascript" language="javascript" src="js/MacGyver.js"></script>-->
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body ng-controller="AutomationSuggestionCtrl">
+
+<div style="background-color:#c5c8d4;width:900px;">
+<span style="color:white;padding:15px;">{{'automation suggestions' | uppercase}}</span>
+
+<div style="background-color:#e6e7f0;padding-bottom: 20px;">
+    <div class="row" style="padding:5px;margin:10px;color:#b8b8c7;font-size: 70%;">
+        <div class="col-md-1">ID</div>
+        <div class="col-md-4">TICKET TITLE</div>
+        <div class="col-md-3">SUGGETED BY</div>
+        <div class="col-md-1">TIME SAVED<br/>/WEEK</div>
+        <div class="col-md-1">NO. TICKETS<br/>/WEEK</div>
+        <div class="col-md-2">APPROVED?</div>
+    </div>
+
+    <div class="row" style="background-color:#ffffff;padding:5px;margin:10px;"
+         ng-repeat="suggestion in suggestions | filter:{status:'!'}">
+        <div class="col-md-1" style="color:#70b8d8">{{suggestion.ID}}</div>
+        <div class="col-md-4">{{suggestion.Title}}</div>
+        <div class="col-md-3"><img class="avatar" ng-src="images/{{suggestion.index+1}}.jpg">{{suggestion.SuggestedBy.first}} {{suggestion.SuggestedBy.last}}</div>
+        <div class="col-md-1">{{suggestion.TimeSavedPerWeek/1000/60/60 | number:1}}h</div>
+        <div class="col-md-1">{{suggestion.NumberOfTicketsPerWeek}}</div>
+        <div class="col-md-2" style="text-align: center;">
+            <div class="glyphicon glyphicon-ok" style="color:darkgreen;font-size:large;" ng-click="approve(suggestion)"></div>
+            <div class="glyphicon glyphicon-remove" style="color:brown;font-size:large;" ng-click="remove(suggestion)"></div>
+        </div>
+    </div>
+
+    <div class="row" style="margin:10px;color:white;" >
+        <div class="col-md-4" ng-click="makeSuggestion()"
+             style="text-align: center;padding:5px;background-color:#7a7d89;text-transform: uppercase;">Suggest new automation</div>
+    </div>
+
+
+
+    <!-- Approved Section-->
+    <div class="row" style="padding:5px;margin:10px;color:#b8b8c7;" ng-show="approveds.length">
+        <div class="col-md-12"><hr></div>
+    </div>
+    <div class="row" style="padding:5px;margin:10px;color:#b8b8c7;" ng-show="approveds.length">
+        <div class="col-md-12">Pending Automation ({{approveds.length}})</div>
+    </div>
+
+    <div class="row" style="background-color:#ffffff;padding:5px;margin:10px;"
+         ng-repeat="suggestion in suggestions | filter:{status:'Approved'} as approveds">
+        <div class="col-md-1" style="color:#70b8d8">{{suggestion.ID}}</div>
+        <div class="col-md-4">{{suggestion.Title}}</div>
+        <div class="col-md-3"><img class="avatar" ng-src="images/{{suggestion.index+1}}.jpg"> {{suggestion.SuggestedBy.first}} {{suggestion.SuggestedBy.last}}</div>
+        <div class="col-md-1">{{suggestion.TimeSavedPerWeek/1000/60/60 | number:1}}h</div>
+        <div class="col-md-1">{{suggestion.NumberOfTicketsPerWeek}}</div>
+        <div class="col-md-2" style="text-align:center;color:darkgreen;" ng-click="done(suggestion)">
+            MARK AS DONE
+            <div class="glyphicon glyphicon-ok" style="font-size:large;" ></div>
+        </div>
+    </div>
+
+    <!-- Done Section-->
+    <div class="row" style="padding:5px;margin:10px;color:#b8b8c7;" ng-show="dones.length">
+        <div class="col-md-12"><hr></div>
+    </div>
+    <div class="row" style="padding:5px;margin:10px;color:#b8b8c7;" ng-show="dones.length">
+        <div class="col-md-12">Done Automation ({{dones.length}})</div>
+    </div>
+
+    <div class="row" style="background-color:#ffffff;padding:5px;margin:10px;"
+         ng-repeat="suggestion in suggestions | filter:{status:'Done'} as dones">
+        <div class="col-md-1" style="color:#70b8d8">{{suggestion.ID}}</div>
+        <div class="col-md-4">{{suggestion.Title}}</div>
+        <div class="col-md-3"><img class="avatar" ng-src="images/{{suggestion.index+1}}.jpg">{{suggestion.SuggestedBy.first}} {{suggestion.SuggestedBy.last}}</div>
+        <div class="col-md-1">{{suggestion.TimeSavedPerWeek/1000/60/60 | number:1}}h</div>
+        <div class="col-md-1">{{suggestion.NumberOfTicketsPerWeek}}</div>
+        <div class="col-md-2">DONE</div>
+    </div>
+</div>
+
+</div>
+
+<!--<div id="modal-include" ng-include src="template"></div>-->
+
+</body>
+</html>
